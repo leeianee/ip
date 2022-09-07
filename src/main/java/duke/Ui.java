@@ -84,4 +84,12 @@ public class Ui {
         print.append(list.toString());
         return print.toString();
     }
+
+    /**
+     * Message shown when a task is undone.
+     * @return String shown when a task is undone.
+     */
+    public static String undoMessage() {
+        return ("The previous command has been undone.");
+    }
 }

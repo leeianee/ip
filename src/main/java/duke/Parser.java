@@ -12,14 +12,16 @@ import duke.command.ListCommand;
 import duke.command.MarkCommand;
 import duke.command.TodoCommand;
 import duke.command.UnmarkCommand;
+import duke.command.UndoCommand;
 
 /**
  * The Parser class parses the input received when running DUke.
  */
 
 public class Parser {
-    private static String[] validInputs = {"delete", "mark", "unmark", "todo", "deadline", "event", "find"};
+    private static String[] validInputs = {"delete", "mark", "unmark", "todo", "deadline", "event", "find", "undo"};
     private TaskList list;
+    private TaskList prevTaskList;
 
     /**
      * Constructor for Parser.
@@ -34,7 +36,7 @@ public class Parser {
      * @param input The String input from the user.
      * @return Whether "bye" has been inputted.
      */
-    public static Command parse(String input) throws DukeException {
+    public Command parse(String input) throws DukeException {
         String[] split = input.split(" ", 2);
         if (input.equals("bye")) {
             return new ByeCommand();
@@ -43,6 +45,9 @@ public class Parser {
         } else if (split.length > 0 && Arrays.asList(validInputs).contains(split[0])) {
             if (split.length < 2) {
                 throw new DukeException(split[0]);
+            }
+            if (split[0] != "find" && split[0] != "undo") {
+                this.prevTaskList = this.list;
             }
             switch (split[0]) {
                 case "delete": // Checks for delete
@@ -66,7 +71,9 @@ public class Parser {
                     temp = split[1].split(" /at ", 2);
                     return new EventCommand(temp[0], temp[1]);
                 case "find":
-                        return new FindCommand(split[1]);
+                    return new FindCommand(split[1]);
+                case "undo":
+                    return new UndoCommand(this.prevTaskList);
                 default: // Default case
                     throw new DukeException();
             }

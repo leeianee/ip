@@ -14,6 +14,7 @@ import duke.command.Command;
 public class Duke {
     private Storage storage;
     private TaskList tasks;
+    private Parser parser;
 
     /**
      * Constructor for Duke.
@@ -34,7 +35,7 @@ public class Duke {
      */
     public String getResponse(String input) {
         try {
-            Command c = Parser.parse(input);
+            Command c = this.parser.parse(input);
             return c.execute(this.tasks, this.storage);
         } catch (DukeException e) {
             return e.getDescription();
